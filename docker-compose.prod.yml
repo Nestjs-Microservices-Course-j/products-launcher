@@ -17,58 +17,45 @@ services:
       - PORT=${CLIENT_GATEWAY_PORT}
       - NATS_SERVERS=nats://nats-server:4222
 
-  # products-ms:
-  #   build: ./products-ms
-  #   volumes:
-  #     - ./products-ms/src:/usr/src/app/src
-  #   command: npm run start:dev
-  #   environment:
-  #     - PORT=3001
-  #     - NATS_SERVERS=nats://nats-server:4222
-  #     - DATABASE_URL=file:./dev.db
+  products-ms:
+    build: 
+      context: ./products-ms
+      dockerfile: dockerfile.prod  
+    image: products-ms
+    environment:
+      - PORT=3001
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=file:./dev.db
 
   
-  # # Orders MS
-  # orders-ms:
-  #   depends_on:
-  #     - orders-db
-  #   build: ./orders-ms
-  #   volumes:
-  #     - ./orders-ms/src:/usr/src/app/src
-  #   command: npm run start:dev
-  #   environment:
-  #     - PORT=3002
-  #     - DATABASE_URL=postgresql://postgres:1234QWER@orders-db:5432/ordersdb?schema=public
-  #     - NATS_SERVERS=nats://nats-server:4222
+  #Orders MS
+  orders-ms:
+    build: 
+      context: ./orders-ms
+      dockerfile: dockerfile.prod
+      args:
+        - ORDERS_DB_URL=${ORDERS_DB_URL}
+    image: orders-ms
+    environment:
+      - PORT=3002
+      - DATABASE_URL=${ORDERS_DB_URL}
+      - NATS_SERVERS=nats://nats-server:4222
 
-  # # Orders DB
-  # orders-db:
-  #   container_name: orders_database
-  #   image: postgres:14.3
-  #   restart: always
-  #   volumes:
-  #     - ./orders-ms/postgres:/var/lib/postgresql/data
-  #   ports:
-  #     - 5432:5432
-  #   environment:
-  #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=1234QWER
-  #     - POSTGRES_DB=ordersdb
 
-  # payments-ms:
-  #   build: ./payments-ms
-  #   volumes:
-  #     - ./payments-ms/src:/usr/src/app/src
-  #   command: npm run start:dev
-  #   ports:
-  #     - 3003:3003
-  #   environment:
-  #     - PORT=3003
-  #     - NATS_SERVERS=nats://nats-server:4222
-  #     - STRIPE_SECRET=${STRIPE_SECRET}
-  #     - STRIPE_SUCCESS_URL=${STRIPE_SUCCESS_URL}
-  #     - STRIPE_CANCEL_URL=${STRIPE_CANCEL_URL}
-  #     - STRIPE_ENDPOINT_SECRET=${STRIPE_ENDPOINT_SECRET}
+  payments-ms:
+    build: 
+     context: ./payments-ms
+     dockerfile: dockerfile.prod
+    image: payments-ms
+    ports:
+      - ${PAYMENST_MS_PORT}:${PAYMENST_MS_PORT}
+    environment:
+      - PORT=${PAYMENST_MS_PORT}
+      - NATS_SERVERS=nats://nats-server:4222
+      - STRIPE_SECRET=${STRIPE_SECRET}
+      - STRIPE_SUCCESS_URL=${STRIPE_SUCCESS_URL}
+      - STRIPE_CANCEL_URL=${STRIPE_CANCEL_URL}
+      - STRIPE_ENDPOINT_SECRET=${STRIPE_ENDPOINT_SECRET}
 
   auth-ms:
     build:
