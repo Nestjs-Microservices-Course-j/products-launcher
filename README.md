@@ -45,4 +45,9 @@ Si se trabaja en el repositorio que tiene los sub-módulos, **primero actualizar
 Si se hace al revés, se perderán las referencias de los sub-módulos en el repositorio principal y tendremos que resolver conflictos.
 
 
+## Webhook a tráves de hookdeck 
+1. Ejecutar `hookdeck login`
+2. Ejecutar  `hookdeck listen 3003 stripe-to-localhost` para conectar con la conexion establecida en hookdeck
+
+
 
