@@ -1,0 +1,24 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: products-ms
+  name: products-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: products-ms
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: products-ms
+    spec:
+      containers:
+      - image: northamerica-south1-docker.pkg.dev/tienda-microservices-473215/image-registry/products-ms
+        name: products-ms
+        resources: {}
+status: {}
